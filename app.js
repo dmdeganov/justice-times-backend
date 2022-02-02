@@ -1,11 +1,15 @@
 const express = require("express");
 const app = express();
+const fs = require("fs");
+const path = require("path");
+const images = require("./routes/images-route");
 const users = require("./routes/users-route");
 const articles = require("./routes/articles-route");
-
+const Image = require("./models/Image");
 const connectDB = require("./db/connect");
 const notFound = require("./middlewares/not-found");
 const errorHandlerMiddleware = require("./middlewares/error-handler");
+const fileUpload = require("./middlewares/file-upload");
 require("dotenv").config();
 
 app.use((req, res, next) => {
@@ -18,11 +22,15 @@ app.use((req, res, next) => {
 
   next();
 });
-app.use(express.static("./public"));
+// app.use(express.static("./public"));
+app.use("/uploads/images", express.static(path.join("uploads", "images")));
+
 app.use(express.json());
 // routes
 app.use("/users", users);
 app.use("/articles", articles);
+app.use("/images", fileUpload.single("image"));
+app.use("/images", images);
 app.use(notFound);
 app.use(errorHandlerMiddleware);
 

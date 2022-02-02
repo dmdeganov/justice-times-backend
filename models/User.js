@@ -6,9 +6,10 @@ const UserSchema = new mongoose.Schema(
     lastname: String,
     email: String,
     password: String,
+    avatar: String,
   },
   {
-    versionKey: false, // You should be aware of the outcome after set to false
+    versionKey: false,
   }
 );
 

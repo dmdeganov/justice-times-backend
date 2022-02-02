@@ -17,6 +17,31 @@ const addNewUser = asyncWrapper(async (req, res) => {
   const user = await User.create(req.body);
   res.status(201).json({ user });
 });
+const editUser = asyncWrapper(async (req, res) => {
+  const { id } = req.params;
+  console.log(req.body);
+
+  const user = await User.findOneAndUpdate({ _id: id }, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  // const { firstname, lastname, avatar } = req.body;
+  // const user = await User.findOneAndUpdate(
+  //   { _id: id },
+  //   { firstname, lastname, avatar },
+  //   {
+  //     new: true,
+  //     runValidators: true,
+  //   }
+  // );
+
+  if (!user) {
+    return next(createCustomError(`No user with id : ${id}`, 404));
+  }
+
+  res.status(201).json(user);
+});
 const addMultipleUsers = asyncWrapper(async (req, res) => {
   const users = req.body;
   for (let user of users) {
@@ -29,4 +54,5 @@ module.exports = {
   getAllUsers,
   addNewUser,
   addMultipleUsers,
+  editUser,
 };
